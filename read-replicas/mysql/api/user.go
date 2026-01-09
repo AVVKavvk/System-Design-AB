@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/AVVKavvk/mysql-replicas/database"
 	"github.com/AVVKavvk/mysql-replicas/models"
+	"github.com/AVVKavvk/mysql-replicas/service"
 	"github.com/labstack/echo/v4"
 )
 
@@ -14,22 +14,23 @@ import (
 // @Tags         users
 // @Accept       json
 // @Produce      json
+// @Param        user_token  header    string  false  "User Token for identifying specific user shard/replica"
 // @Success      200  {array}   models.User
 // @Failure      500  {object}  map[string]string
 // @Router       /users [get]
 func GetUsers(c echo.Context) error {
-	var users []models.User
 
-	// This looks like a normal query, but dbresolver sends it to a Replica
-	db := database.MysqlDB.Find(&users)
+	userToken := c.Request().Header.Get("user_token")
+	if userToken == "" {
+		userToken = "defaultUserToken"
+	}
+	result, err := service.GetUsersService(c.Request().Context(), userToken)
 
-	if db.Error != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, db.Error.Error())
+	if err != nil {
+		return err
 	}
 
-	database.CheckDatabaseConnection(database.MysqlDB)
-
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, result)
 }
 
 // CreateUser godoc
@@ -49,14 +50,10 @@ func CreateUser(c echo.Context) error {
 		return err
 	}
 
-	// This automatically goes to the Primary
-	db := database.MysqlDB.Create(&user)
-
-	if db.Error != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, db.Error.Error())
+	err := service.CreateUserService(c.Request().Context(), user)
+	if err != nil {
+		return err
 	}
-
-	database.CheckDatabaseConnection(database.MysqlDB)
 
 	return c.JSON(http.StatusCreated, user)
 }

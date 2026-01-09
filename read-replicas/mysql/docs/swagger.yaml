@@ -24,6 +24,11 @@ paths:
       - application/json
       description: Retrieve a list of users. This query is automatically routed to
         Read Replicas (Port 3307, 3308, 3309).
+      parameters:
+      - description: User Token for identifying specific user shard/replica
+        in: header
+        name: user_token
+        type: string
       produces:
       - application/json
       responses:
