@@ -1,0 +1,9 @@
+CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST='mysql-primary',
+  SOURCE_USER='replication_user',
+  SOURCE_PASSWORD='replication_password',
+  SOURCE_LOG_FILE='mysql-bin.000003',
+  SOURCE_LOG_POS=851;
+
+START REPLICA;
+SHOW REPLICA STATUS\G

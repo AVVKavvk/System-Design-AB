@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  mysql-primary:
+    image: mysql:8.0
+    container_name: mysql-primary
+    environment:
+      MYSQL_ROOT_PASSWORD: primary_password
+    volumes:
+      - ./docker_data/primary/conf:/etc/mysql/conf.d
+      - ./docker_data/primary/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - mysql-replication
+
+  mysql-replica-1:
+    image: mysql:8.0
+    container_name: mysql-replica-1
+    environment:
+      MYSQL_ROOT_PASSWORD: replica_password
+    volumes:
+      - ./docker_data/replica1/conf:/etc/mysql/conf.d
+      - ./docker_data/replica1/data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - mysql-replication
+    depends_on:
+      - mysql-primary
+  mysql-replica-2:
+    image: mysql:8.0
+    container_name: mysql-replica-2
+    environment:
+      MYSQL_ROOT_PASSWORD: replica_password
+    volumes:
+      - ./docker_data/replica2/conf:/etc/mysql/conf.d
+      - ./docker_data/replica2/data:/var/lib/mysql
+    ports:
+      - "3308:3306"
+    networks:
+      - mysql-replication
+    depends_on:
+      - mysql-primary
+  mysql-replica-3:
+    image: mysql:8.0
+    container_name: mysql-replica-3
+    environment:
+      MYSQL_ROOT_PASSWORD: replica_password
+
+    volumes:
+      - ./docker_data/replica3/conf:/etc/mysql/conf.d
+      - ./docker_data/replica3/data:/var/lib/mysql
+    ports:
+      - "3309:3306"
+    networks:
+      - mysql-replication
+    depends_on:
+      - mysql-primary
+
+networks:
+  mysql-replication:
+    driver: bridge
