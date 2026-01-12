@@ -1,0 +1,18 @@
+version: "3.8"
+name: "partition_test"
+services:
+  # Service: MySQL Database
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_partition
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: partition_db
+    ports:
+      - "3306:3306" # Optional: only needed if you want to connect via Workbench/TablePlus from host
+    volumes:
+      - mysql_data:/var/lib/mysql # Persist data even if container stops
+
+# Define volume for persistence
+volumes:
+  mysql_data:
