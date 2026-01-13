@@ -81,6 +81,22 @@ FPR ≈ (1 - e^(-1000/8192))^1
 
 ## Implementation in Go
 
+### APIs
+
+#### Run the project using `air` or any other library or just `go run .`
+
+```bash
+air
+```
+
+or
+
+```bash
+go run .
+```
+
+Swagger URL: http://localhost:8080/docs//index.html#
+
 ### Bit Array Structure
 
 The implementation uses a 2D logical structure built on a 1D array of `uint64`:

@@ -37,10 +37,22 @@ func GetBloomFilter() *BloomFilter {
 }
 
 // hash computes a single hash value
-func (bf *BloomFilter) hash(data []byte) int {
+func (bf *BloomFilter) hash(data []byte) uint64 {
 	h := fnv.New64()
 	_, _ = h.Write(data)
-	return int(h.Sum64())
+	return h.Sum64()
+}
+
+// Add inserts an element into the bloom filter
+func (bf *BloomFilter) Add(data []byte) (rowIdx int, colIdx int) {
+	// Perform modulo on uint64 to ensure index is always positive
+	index := bf.hash(data) % uint64(bf.sizeInBits)
+	return bf.setBit(int(index))
+}
+
+func (bf *BloomFilter) Contains(data []byte) (isFound bool, rowIdx int, colIdx int) {
+	index := bf.hash(data) % uint64(bf.sizeInBits)
+	return bf.getBit(int(index))
 }
 
 // Size returns the size of the bit array
@@ -53,18 +65,6 @@ func (bf *BloomFilter) Clear() {
 	for i := range bf.bits {
 		bf.bits[i] = 0
 	}
-}
-
-// Add inserts an element into the bloom filter
-func (bf *BloomFilter) Add(data []byte) {
-	index := bf.hash(data) % bf.sizeInBits
-	bf.setBit(index)
-}
-
-// Contains checks if an element might be in the set
-func (bf *BloomFilter) Contains(data []byte) (isFound bool, rowIdx int, colIdx int) {
-	index := bf.hash(data) % bf.sizeInBits
-	return bf.getBit(index)
 }
 
 func (bf *BloomFilter) setBit(pos int) (rowIdx int, colIdx int) {

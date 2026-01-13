@@ -5,10 +5,13 @@ import (
 	"github.com/AVVKavvk/bloom_filter/models"
 )
 
-func AddWordService(word *models.Word) error {
+func AddWordService(word *models.Word) (*models.ResponseAddWord, error) {
 	blf := bloomFilter.GetBloomFilter()
-	blf.Add([]byte(word.Word))
-	return nil
+	rowInd, colInd := blf.Add([]byte(word.Word))
+	return &models.ResponseAddWord{
+		RowIdx: rowInd,
+		ColIdx: colInd,
+	}, nil
 }
 
 func CheckWeatherWordIsExistService(word *models.Word) (*models.ResponseWordProbability, error) {

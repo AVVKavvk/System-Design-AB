@@ -13,7 +13,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        word  body      models.Word  true  "Word to add"
-// @Success      201   {object}  models.Word
+// @Success      201   {object}  models.ResponseAddWord
 // @Failure      400   {object}  map[string]string "Invalid request body"
 // @Router       /words [post]
 func AddWord(ctx echo.Context) error {
@@ -22,11 +22,11 @@ func AddWord(ctx echo.Context) error {
 	if err := ctx.Bind(&word); err != nil {
 		return err
 	}
-	err := service.AddWordService(&word)
+	result, err := service.AddWordService(&word)
 	if err != nil {
 		return err
 	}
-	return ctx.JSON(201, word)
+	return ctx.JSON(201, result)
 }
 
 // CheckWeatherWordIsExist godoc
