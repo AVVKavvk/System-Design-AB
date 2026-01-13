@@ -1,0 +1,110 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a bloom filter service.",
+        "title": "Bloom Filter API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/words": {
+            "post": {
+                "description": "Stores a word in the bloom filter for future membership checks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BloomFilter"
+                ],
+                "summary": "Add a new word to the Bloom Filter",
+                "parameters": [
+                    {
+                        "description": "Word to add",
+                        "name": "word",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Word"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Word"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/words/check": {
+            "post": {
+                "description": "Checks the Bloom Filter for word membership. Note: may return false positives.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BloomFilter"
+                ],
+                "summary": "Check if a word exists",
+                "parameters": [
+                    {
+                        "description": "Word to check",
+                        "name": "word",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Word"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a boolean existence check",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Word": {
+            "type": "object",
+            "properties": {
+                "word": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

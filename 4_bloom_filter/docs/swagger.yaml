@@ -1,0 +1,73 @@
+basePath: /
+definitions:
+  models.Word:
+    properties:
+      word:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a bloom filter service.
+  title: Bloom Filter API
+  version: "1.0"
+paths:
+  /words:
+    post:
+      consumes:
+      - application/json
+      description: Stores a word in the bloom filter for future membership checks
+      parameters:
+      - description: Word to add
+        in: body
+        name: word
+        required: true
+        schema:
+          $ref: '#/definitions/models.Word'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Word'
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new word to the Bloom Filter
+      tags:
+      - BloomFilter
+  /words/check:
+    post:
+      consumes:
+      - application/json
+      description: 'Checks the Bloom Filter for word membership. Note: may return
+        false positives.'
+      parameters:
+      - description: Word to check
+        in: body
+        name: word
+        required: true
+        schema:
+          $ref: '#/definitions/models.Word'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns a boolean existence check
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Check if a word exists
+      tags:
+      - BloomFilter
+swagger: "2.0"
