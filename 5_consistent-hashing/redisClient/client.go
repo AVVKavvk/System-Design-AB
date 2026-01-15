@@ -1,6 +1,7 @@
 package redisClient
 
 import (
+	"log"
 	"sync"
 
 	"github.com/go-redis/redis"
@@ -21,5 +22,12 @@ func init() {
 			Password: "mypass",
 			DB:       0, // use default DB
 		})
+		_, err := rc.Ping().Result()
+		if err != nil {
+			log.Fatalf("Could not connect to Redis: %v", err)
+		}
+
+		log.Println("redis client successfully connected")
+
 	})
 }

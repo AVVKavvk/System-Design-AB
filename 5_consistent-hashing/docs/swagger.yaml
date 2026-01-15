@@ -1,0 +1,159 @@
+basePath: /
+definitions:
+  models.CreateServer:
+    properties:
+      name:
+        type: string
+    type: object
+  models.User:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for managing users with consistent hashing.
+  title: Consistent Hashing API
+  version: "1.0"
+paths:
+  /servers:
+    get:
+      description: Returns a list of all servers currently in the consistent hashing
+        ring
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      summary: List all active servers
+      tags:
+      - servers
+    post:
+      consumes:
+      - application/json
+      description: Adds a server and re-distributes keys based on consistent hashing
+      parameters:
+      - description: Server Details
+        in: body
+        name: server
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateServer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add a new physical/virtual server to the ring
+      tags:
+      - servers
+  /servers/{name}:
+    delete:
+      description: Removes a server by name and migrates its keys to the next available
+        node
+      parameters:
+      - description: Server Name
+        in: path
+        name: name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Remove a server from the ring
+      tags:
+      - servers
+    get:
+      description: Retrieves information about a specific server based on its name
+      parameters:
+      - description: Server Name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      summary: Get information about a specific server
+      tags:
+      - servers
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Takes a user object and stores it using consistent hashing
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new user
+      tags:
+      - users
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a user's data based on their unique ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user by ID
+      tags:
+      - users
+swagger: "2.0"
