@@ -306,3 +306,7 @@ http://localhost:8080/docs/index.html
 - **Golang Migrate** - Database migrations
 - **Swagger** - API documentation
 - **Docker** - Containerization
+
+## PostgreSQL Notes
+
+https://github.com/AVVKavvk/System-Design-AB/tree/main/7_postgresql/PostGres.pdf
