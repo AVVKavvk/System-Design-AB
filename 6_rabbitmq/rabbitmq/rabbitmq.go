@@ -7,23 +7,24 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+// Store the POINTER
 var (
-	RabbitMQConnection amqp.Connection
-	once               sync.Once
+	instance *amqp.Connection
+	mu       sync.Mutex
 )
 
-func GetRabbitMQConnection() amqp.Connection {
-	return RabbitMQConnection
-}
+func GetRabbitMQConnection() (*amqp.Connection, error) {
+	mu.Lock()
+	defer mu.Unlock()
 
-func init() {
-	once.Do(func() {
-		var err error
+	// If connection doesn't exist or is closed, reconnect
+	if instance == nil || instance.IsClosed() {
 		conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
-		RabbitMQConnection = *conn
-		fmt.Println("Rabbitmq connected")
-	})
+		instance = conn
+		fmt.Println("RabbitMQ connected successfully")
+	}
+	return instance, nil
 }

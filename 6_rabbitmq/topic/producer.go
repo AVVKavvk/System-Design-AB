@@ -1,4 +1,4 @@
-package direct
+package topic
 
 import (
 	"encoding/json"
@@ -49,35 +49,15 @@ func Producer() {
 		panic(err)
 	}
 
-	err = ch.ExchangeDeclare(ExchangeName, "direct", true, false, false, false, nil)
+	err = ch.ExchangeDeclare(ExchangeName, "topic", true, false, false, false, nil)
 
-	if err != nil {
-		panic(err)
-	}
-
-	emailQueue, err := ch.QueueDeclare(EmailQueueName, true, false, false, false, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	whatsappQueue, err := ch.QueueDeclare(WhatsappQueueName, true, false, false, false, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	err = ch.QueueBind(emailQueue.Name, EmailQueueRoutingKey, ExchangeName, false, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	err = ch.QueueBind(whatsappQueue.Name, WhatsappQueueRoutingKey, ExchangeName, false, nil)
 	if err != nil {
 		panic(err)
 	}
 
 	time.Sleep(30 * time.Second)
 
-	err = ch.Publish(ExchangeName, EmailQueueRoutingKey, false, false, amqp091.Publishing{
+	err = ch.Publish(ExchangeName, "email.send", false, false, amqp091.Publishing{
 		ContentType: "text/plan",
 		Body:        []byte(emailMessageStr),
 	})
@@ -90,7 +70,7 @@ func Producer() {
 
 	time.Sleep(30 * time.Second)
 
-	err = ch.Publish(ExchangeName, WhatsappQueueRoutingKey, false, false, amqp091.Publishing{
+	err = ch.Publish(ExchangeName, "whatsapp.send", false, false, amqp091.Publishing{
 		ContentType: "text/plan",
 		Body:        []byte(whatsappMessageStr),
 	})

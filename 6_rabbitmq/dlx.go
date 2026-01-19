@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -31,6 +32,8 @@ func DLX() {
 
 	// 3. Start Consumer in a goroutine
 	go Consumer(ch)
+
+	time.Sleep(5 * time.Second)
 
 	// 4. Run Producer to send one test message
 	Producer(ch)
@@ -84,23 +87,33 @@ func setupInfrastructure(ch *amqp.Channel) {
 	ch.ExchangeDeclare(MainExchange, "direct", true, false, false, false, nil)
 	ch.ExchangeDeclare(RetryExchange, "direct", true, false, false, false, nil)
 
-	// Main Queue: If a message is Nacked(false), send it to RetryExchange
-	mainArgs := amqp.Table{"x-dead-letter-exchange": RetryExchange}
-	ch.QueueDeclare(MainQueue, true, false, false, false, mainArgs)
+	ch.QueueDeclare(MainQueue, true, false, false, false, nil)
 	ch.QueueBind(MainQueue, RoutingKey, MainExchange, false, nil)
 
-	// Retry Queue: Hold message for 5s, then send back to MainExchange
-	retryArgs := amqp.Table{
-		"x-dead-letter-exchange":    MainExchange,
-		"x-dead-letter-routing-key": RoutingKey,
-		"x-message-ttl":             int32(5000), // 5 seconds
-	}
-	ch.QueueDeclare(RetryQueue, true, false, false, false, retryArgs)
+	ch.QueueDeclare(RetryQueue, true, false, false, false, nil)
 	ch.QueueBind(RetryQueue, RoutingKey, RetryExchange, false, nil)
+
+	err := UpsertPolicy("main_retry_policy", "^email_queue$", PolicyDefinition{
+		"dead-letter-exchange": RetryExchange,
+	})
+	if err != nil {
+		fmt.Printf("Error setting main policy: %v\n", err)
+	}
+
+	// 2. Sync Policy for the Retry Queue (TTL and return to Main)
+	err = UpsertPolicy("retry_delay_policy", "^email_retry_queue$", PolicyDefinition{
+		"dead-letter-exchange":    MainExchange,
+		"dead-letter-routing-key": RoutingKey,
+		"message-ttl":             5000, // 5 seconds
+	})
+	if err != nil {
+		fmt.Printf("Error setting retry policy: %v\n", err)
+	}
 }
 
 func getRetryCount(headers amqp.Table) int64 {
 	if val, ok := headers["x-death"]; ok {
+		fmt.Println("val:", val)
 		if slice, ok := val.([]interface{}); ok && len(slice) > 0 {
 			if table, ok := slice[0].(amqp.Table); ok {
 				return table["count"].(int64)
