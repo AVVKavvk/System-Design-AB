@@ -1,0 +1,9 @@
+[build]
+  # Keep your build command as is
+  cmd = "sh -c './run-migration.sh && swag init && go build -o ./tmp/main main.go'"
+  bin = "./tmp/main"
+  delay = 100
+  exclude_dir = ["assets", "tmp", "vendor", "test", "docs"]
+  
+  # Ensure you are only watching source files
+  include_ext = ["go", "tpl", "tmpl", "html", "toml"]
