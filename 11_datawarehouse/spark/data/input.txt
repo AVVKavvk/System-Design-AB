@@ -1,0 +1,4 @@
+Apache Spark is amazing
+Spark makes big data processing easy
+Go and Spark work together
+Apache Beam with Spark is powerful
