@@ -48,6 +48,9 @@ There are several ways to implement the logic behind a rate limiter. Here are th
 
 3. **API Gateway/Middleware**: The most common approach. Tools like Nginx, Kong, or Amazon API Gateway handle the limiting before the request even reaches your application logic.
 
+while true; do curl http://localhost:8080/users/token-bucket; sleep 0.1; done
+while true; do curl http://localhost:8080/users/leaky-bucket; sleep 0.1; done
+
 ## Resources
 
 [Design Rate Limiter](https://bytebytego.com/courses/system-design-interview/design-a-rate-limiter)

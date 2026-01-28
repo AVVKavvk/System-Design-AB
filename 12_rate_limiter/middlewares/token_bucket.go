@@ -24,6 +24,7 @@ func addTokenBucketRateLimiter(capacity int, refillRatePerMinute float64) echo.M
 
 			// Get or create bucket for this client
 			tokenBucketsMutex.Lock()
+			defer tokenBucketsMutex.Unlock()
 
 			bucket, exists := tokenBuckets[clientIP]
 
@@ -32,8 +33,6 @@ func addTokenBucketRateLimiter(capacity int, refillRatePerMinute float64) echo.M
 				tokenBuckets[clientIP] = bucket
 
 			}
-
-			tokenBucketsMutex.Unlock()
 
 			// Check if request is allowed
 			if !bucket.Allow() {
