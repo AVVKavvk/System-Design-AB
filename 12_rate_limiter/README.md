@@ -50,6 +50,7 @@ There are several ways to implement the logic behind a rate limiter. Here are th
 
 while true; do curl http://localhost:8080/users/token-bucket; sleep 0.1; done
 while true; do curl http://localhost:8080/users/leaky-bucket; sleep 0.1; done
+while true; do curl http://localhost:8080/users/fixed-window; sleep 0.1; done
 
 ## Resources
 

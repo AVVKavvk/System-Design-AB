@@ -55,5 +55,23 @@ func main() {
 		})
 	}, middlewares.LeakyBucketMiddleware)
 
+	// fixed window
+	e.GET("/users/fixed-window", func(ctx echo.Context) error {
+		return ctx.JSON(http.StatusOK, map[string]interface{}{
+			"message": "Success",
+			"algo":    "fixed-window",
+			"data": []map[string]interface{}{
+				{
+					"id":   1,
+					"name": "John Doe",
+				},
+				{
+					"id":   2,
+					"name": "Maria Jones",
+				},
+			},
+		})
+	}, middlewares.FixedWindowMiddleware)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
