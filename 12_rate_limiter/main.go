@@ -73,5 +73,23 @@ func main() {
 		})
 	}, middlewares.FixedWindowMiddleware)
 
+	// sliding window counter
+	e.GET("/users/sliding-window-counter", func(ctx echo.Context) error {
+		return ctx.JSON(http.StatusOK, map[string]interface{}{
+			"message": "Success",
+			"algo":    "sliding-window-counter",
+			"data": []map[string]interface{}{
+				{
+					"id":   1,
+					"name": "John Doe",
+				},
+				{
+					"id":   2,
+					"name": "Maria Jones",
+				},
+			},
+		})
+	}, middlewares.SlidingWindowCounterMiddleware)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
