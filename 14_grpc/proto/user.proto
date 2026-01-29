@@ -19,8 +19,8 @@ message CreateUserRequest {
 
 message GetAllUserRequest{}
 
-message GetUsersByIdsRequest {
-    repeated string id = 1;
+message GetUserByIdRequest {
+    string id = 1;
 }
 
 message BulkUserResponse {
@@ -42,7 +42,7 @@ service UserService{
     rpc GetAllUsers(GetAllUserRequest) returns (stream User);
 
     // Client Streaming: Send IDs, get one response
-    rpc GetUsersByIds(stream GetUsersByIdsRequest) returns (BulkUserResponse);
+    rpc GetUsersByIds(stream GetUserByIdRequest) returns (BulkUserResponse);
 
     //Bidirectional: Real-time chat/notification
     rpc UserChat(stream ChatMessage) returns (stream ChatMessage);

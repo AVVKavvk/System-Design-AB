@@ -34,7 +34,7 @@ type UserServiceClient interface {
 	// Server Streaming: Get all users
 	GetAllUsers(ctx context.Context, in *GetAllUserRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[User], error)
 	// Client Streaming: Send IDs, get one response
-	GetUsersByIds(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[GetUsersByIdsRequest, BulkUserResponse], error)
+	GetUsersByIds(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[GetUserByIdRequest, BulkUserResponse], error)
 	// Bidirectional: Real-time chat/notification
 	UserChat(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatMessage, ChatMessage], error)
 }
@@ -76,18 +76,18 @@ func (c *userServiceClient) GetAllUsers(ctx context.Context, in *GetAllUserReque
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type UserService_GetAllUsersClient = grpc.ServerStreamingClient[User]
 
-func (c *userServiceClient) GetUsersByIds(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[GetUsersByIdsRequest, BulkUserResponse], error) {
+func (c *userServiceClient) GetUsersByIds(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[GetUserByIdRequest, BulkUserResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[1], UserService_GetUsersByIds_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[GetUsersByIdsRequest, BulkUserResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[GetUserByIdRequest, BulkUserResponse]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type UserService_GetUsersByIdsClient = grpc.ClientStreamingClient[GetUsersByIdsRequest, BulkUserResponse]
+type UserService_GetUsersByIdsClient = grpc.ClientStreamingClient[GetUserByIdRequest, BulkUserResponse]
 
 func (c *userServiceClient) UserChat(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatMessage, ChatMessage], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -111,7 +111,7 @@ type UserServiceServer interface {
 	// Server Streaming: Get all users
 	GetAllUsers(*GetAllUserRequest, grpc.ServerStreamingServer[User]) error
 	// Client Streaming: Send IDs, get one response
-	GetUsersByIds(grpc.ClientStreamingServer[GetUsersByIdsRequest, BulkUserResponse]) error
+	GetUsersByIds(grpc.ClientStreamingServer[GetUserByIdRequest, BulkUserResponse]) error
 	// Bidirectional: Real-time chat/notification
 	UserChat(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error
 	mustEmbedUnimplementedUserServiceServer()
@@ -130,7 +130,7 @@ func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserReq
 func (UnimplementedUserServiceServer) GetAllUsers(*GetAllUserRequest, grpc.ServerStreamingServer[User]) error {
 	return status.Errorf(codes.Unimplemented, "method GetAllUsers not implemented")
 }
-func (UnimplementedUserServiceServer) GetUsersByIds(grpc.ClientStreamingServer[GetUsersByIdsRequest, BulkUserResponse]) error {
+func (UnimplementedUserServiceServer) GetUsersByIds(grpc.ClientStreamingServer[GetUserByIdRequest, BulkUserResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method GetUsersByIds not implemented")
 }
 func (UnimplementedUserServiceServer) UserChat(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error {
@@ -187,11 +187,11 @@ func _UserService_GetAllUsers_Handler(srv interface{}, stream grpc.ServerStream)
 type UserService_GetAllUsersServer = grpc.ServerStreamingServer[User]
 
 func _UserService_GetUsersByIds_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(UserServiceServer).GetUsersByIds(&grpc.GenericServerStream[GetUsersByIdsRequest, BulkUserResponse]{ServerStream: stream})
+	return srv.(UserServiceServer).GetUsersByIds(&grpc.GenericServerStream[GetUserByIdRequest, BulkUserResponse]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type UserService_GetUsersByIdsServer = grpc.ClientStreamingServer[GetUsersByIdsRequest, BulkUserResponse]
+type UserService_GetUsersByIdsServer = grpc.ClientStreamingServer[GetUserByIdRequest, BulkUserResponse]
 
 func _UserService_UserChat_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(UserServiceServer).UserChat(&grpc.GenericServerStream[ChatMessage, ChatMessage]{ServerStream: stream})
