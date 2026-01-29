@@ -63,8 +63,47 @@ While REST is the industry standard, gRPC excels in specific environments, parti
 
 - **Polyglot**: You can generate client/server code in almost any language (Go, Python, Java, C++, etc.) from the same `.proto` file.
 
+<br/>
+<br/>
+
+# Golang + Protoc + gRPC
+
+This repo covers all the 4 types of `gRPC` methods in golang with `protoc` as docker container.
+
 ## Docker
 
-```docker
-docker exec -it proto-gen protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/\*.proto
+Up the container
+
+```bash
+docker compose up -d
 ```
+
+Container status
+
+```bash
+docker ps
+```
+
+### Create golang proto and gRPC code
+
+```bash
+docker exec -it proto-gen protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/user.proto
+```
+
+## gRPC Methods
+
+### Unary
+
+![Unary](./images/unary.png)
+
+### Server Streaming
+
+![Server Streaming](./images/server_streaming.png)
+
+### Client Streaming
+
+![Client Streaming](./images/client_streaming.png)
+
+### Bi-Directional Streaming
+
+![Bi-Directional Streaming](./images/bidi_streaming.png)
