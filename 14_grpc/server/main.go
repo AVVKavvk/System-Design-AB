@@ -14,9 +14,7 @@ type userServer struct {
 	Users map[string]*pb.User
 }
 
-var (
-	port = ":8080"
-)
+var ()
 
 func NewUserServer() *userServer {
 	return &userServer{
@@ -26,6 +24,8 @@ func NewUserServer() *userServer {
 
 func main() {
 
+	var port = ":8080"
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
@@ -34,6 +34,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	us := NewUserServer()
+
 	pb.RegisterUserServiceServer(grpcServer, us)
 
 	log.Printf("Server started at %v", lis.Addr())

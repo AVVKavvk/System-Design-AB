@@ -8,6 +8,7 @@ import (
 	pb "github.com/AVVKavvk/grpc/proto"
 )
 
+// Unary: Standard Request-Response
 func (us *userServer) CreateUser(c context.Context, userReq *pb.CreateUserRequest) (*pb.User, error) {
 	userId := generateThreeDigitUserId()
 

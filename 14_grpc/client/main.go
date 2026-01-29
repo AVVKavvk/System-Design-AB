@@ -8,12 +8,14 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var (
-	port          = ":8080"
-	connectionStr = "localhost" + port
-)
+var ()
 
 func main() {
+
+	var (
+		port          = ":8080"
+		connectionStr = "localhost" + port
+	)
 
 	conn, err := grpc.NewClient(connectionStr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
@@ -41,5 +43,9 @@ func main() {
 
 	if err := createUser(client, &user2); err != nil {
 		log.Fatalf("Failed to create user: %v", err)
+	}
+
+	if err := getAllUsers(client); err != nil {
+		log.Fatalf("Failed to get users: %v", err)
 	}
 }
