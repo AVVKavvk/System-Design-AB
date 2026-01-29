@@ -1,0 +1,13 @@
+name: grpc
+services:
+  proto-gen:
+    image: jaegertracing/protobuf:latest
+    container_name: proto-gen
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    # This combination is the most reliable way to keep a container idle
+    tty: true
+    stdin_open: true
+    restart: always
+    entrypoint: ["tail", "-f", "/dev/null"]
