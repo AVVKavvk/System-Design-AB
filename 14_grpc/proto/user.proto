@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./proto";
+
+message User{
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    int32 age = 4;
+}
+
+message CreateUserRequest {
+    string name = 1;
+    string email = 2;
+    int32 age = 3;
+}
+
+message GetAllUserRequest{}
+
+message GetUsersByIdsRequest {
+    repeated string id = 1;
+}
+
+message BulkUserResponse {
+    repeated User users = 1;
+}
+
+message ChatMessage {
+    string user_id = 1;
+    string message = 2;
+}
+
+
+service UserService{
+
+    // Unary: Create a user
+    rpc CreateUser(CreateUserRequest) returns (User);
+
+    // Server Streaming: Get all users
+    rpc GetAllUsers(GetAllUserRequest) returns (stream User);
+
+    // Client Streaming: Send IDs, get one response
+    rpc GetUsersByIds(stream GetUsersByIdsRequest) returns (BulkUserResponse);
+
+    //Bidirectional: Real-time chat/notification
+    rpc UserChat(stream ChatMessage) returns (stream ChatMessage);
+
+}

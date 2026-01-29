@@ -1,7 +1,7 @@
 name: grpc
 services:
   proto-gen:
-    image: jaegertracing/protobuf:latest
+    build: .
     container_name: proto-gen
     volumes:
       - .:/workspace
