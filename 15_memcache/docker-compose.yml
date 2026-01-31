@@ -1,0 +1,14 @@
+name: memcache
+services:
+  memcached:
+    image: memcached:1.6-alpine
+    container_name: memcache_container
+    ports:
+      - "11211:11211"
+    command:
+      - "-m"
+      - "128" # Limit memory to 128MB
+      - "-c"
+      - "1024" # Max concurrent connections
+      - "-v" # Verbose output (good for debugging)
+
