@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/AVVKavvk/ram/algo"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -45,7 +46,10 @@ func main() {
 		for _, room := range rooms {
 			if room != s.ID() { // Don't broadcast to the connection ID room
 				log.Printf("📤 Broadcasting to room: %s", room)
-				socket.BroadcastToRoom("/", room, "message", map[string]interface{}{"message": msg, "user": s.ID()})
+
+				// Check if message is abuse
+				newNotAbuseMsg := algo.CheckAbuseAndGetNewMessage(msg)
+				socket.BroadcastToRoom("/", room, "message", map[string]interface{}{"message": newNotAbuseMsg, "user": s.ID()})
 			}
 		}
 		// Also emit back to sender
@@ -77,4 +81,8 @@ func main() {
 
 	log.Println("🚀 Server starting on :8080")
 	e.Logger.Fatal(e.Start(":8080"))
+}
+
+func init() {
+	algo.InitTrieWithAbuseWords()
 }
