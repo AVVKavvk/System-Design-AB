@@ -1,0 +1,10 @@
+# dependencies (bun install)
+node_modules
+
+tmp/
+
+logs/
+
+.env
+
+**.txt
