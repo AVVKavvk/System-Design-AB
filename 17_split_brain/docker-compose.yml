@@ -1,0 +1,66 @@
+name: split-brian
+
+services:
+  node1:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    networks:
+      cluster_net:
+        ipv4_address: 172.20.0.11
+
+    environment:
+      - NODE_ID=1
+      - PEERS=node2,node3,node4,node5
+
+  node2:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    networks:
+      cluster_net:
+        ipv4_address: 172.20.0.12
+
+    environment:
+      - NODE_ID=2
+      - PEERS=node1,node3,node4,node5
+  node3:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    networks:
+      cluster_net:
+        ipv4_address: 172.20.0.13
+
+    environment:
+      - NODE_ID=3
+      - PEERS=node1,node2,node4,node5
+  node4:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    networks:
+      cluster_net:
+        ipv4_address: 172.20.0.14
+
+    environment:
+      - NODE_ID=4
+      - PEERS=node1,node2,node3,node5
+  node5:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    networks:
+      cluster_net:
+        ipv4_address: 172.20.0.15
+
+    environment:
+      - NODE_ID=5
+      - PEERS=node1,node2,node3,node4
+
+networks:
+  cluster_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
