@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leader-election-app
+  namespace: default
+  labels:
+    app: leader-election
+spec:
+  replicas: 3 # Three pods competing for leadership
+  selector:
+    matchLabels:
+      app: leader-election
+  template:
+    metadata:
+      labels:
+        app: leader-election
+    spec:
+      containers:
+      - name: app
+        image: leader-election:latest
+        imagePullPolicy: Never # Use local image built with minikube
+        env:
+        - name: ETCD_ENDPOINT
+          value: "etcd:2379"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
