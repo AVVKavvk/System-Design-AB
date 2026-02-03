@@ -76,7 +76,7 @@ Node 4: I see 4 peers. Status: Follower
 Node 5: I see 4 peers. Status: Follower
 ```
 
-!["start.png"](./images/ps.png)
+!["start.png"](./images/start.png)
 
 ## Creating Split-Brain Scenarios
 
