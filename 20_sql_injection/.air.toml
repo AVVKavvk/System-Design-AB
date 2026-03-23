@@ -1,0 +1,10 @@
+[build]
+  # Keep your build command as is
+  cmd = "go build -o ./tmp/main ."
+  bin = "./tmp/main"
+  
+  # FIX: Add "docs" here to prevent the infinite loop
+  exclude_dir = ["assets", "tmp", "vendor", "test", "docs"]
+  
+  # Ensure you are only watching source files
+  include_ext = ["go", "tpl", "tmpl", "html", "toml"]
