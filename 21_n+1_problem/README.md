@@ -15,11 +15,11 @@ Imagine you have two tables: `Authors` and `Books`. You want to list 10 authors 
 2. **The "N" Queries**: Your code loops through those 10 authors. For every single author, it fires a new query to get their books.
 
    ```sql
-   SELECT _ FROM books WHERE author_id = 1;
+   SELECT * FROM books WHERE author_id = 1;
    ```
 
    ```sql
-   SELECT \_ FROM books WHERE author_id = 2;
+   SELECT * FROM books WHERE author_id = 2;
    ```
 
    ...and so on, 10 times.
