@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    container_name: pgbouncer
+    environment:
+      - DB_HOST=db # Postgres host
+      - DB_PORT=5432 # Postgres port
+      - DB_USER=user # Postgres user
+      - DB_PASSWORD=password # Postgres password
+      - DB_NAME=mydatabase # `*` for all databases
+      - POOL_MODE=transaction
+      - AUTH_TYPE=scram-sha-256 # or md5 — matches Postgres default
+      - ADMIN_USERS=user
+      - LISTEN_ADDR=0.0.0.0
+      - LISTEN_PORT=6432
+      - MAX_CLIENT_CONN=100
+      - DEFAULT_POOL_SIZE=5 # default connection pool size
+    ports:
+      - "6432:6432"
+    depends_on:
+      - db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-h",
+          "localhost",
+          "-p",
+          "6432",
+          "-U",
+          "user",
+          "-d",
+          "mydatabase",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  app:
+    build: .
+    container_name: app
+    environment:
+      - PG_BOUNCER_DATABASE_URL=postgres://user:password@pgbouncer:6432/mydatabase?sslmode=disable
+    ports:
+      - "8080:8080"
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
