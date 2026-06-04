@@ -1,0 +1,85 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build output
+bin/
+dist/
+build/
+
+# Go workspace
+go.work
+go.work.sum
+
+# Dependency directories
+vendor/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Temporary files
+tmp/
+temp/
+
+# Coverage reports
+coverage.out
+coverage.html
+
+# Air live reload
+.air.toml
+
+# Delve debugger
+__debug_bin
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+docker-compose.override.yml
+
+# Generated files
+*.pem
+*.key
+
+# Test cache
+.cache/
+
+# Echo specific uploads/static generated files
+uploads/
+public/
+
+# Node modules (if frontend included)
+node_modules/
+
+# Mac/Linux hidden files
+*.pid
+*.seed
+*.pid.lock
+
+
+# Avvk
+avvk/
